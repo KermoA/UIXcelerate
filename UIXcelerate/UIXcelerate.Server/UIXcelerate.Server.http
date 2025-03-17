@@ -1,0 +1,6 @@
+@UIXcelerate.Server_HostAddress = http://localhost:5081
+
+GET {{UIXcelerate.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
