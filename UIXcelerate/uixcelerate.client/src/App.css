@@ -30,3 +30,30 @@ th, td {
         background-color: #f8f9fa;
     }
 }
+
+.card {
+    border-radius: 15px;
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.card-text {
+    font-size: 1rem;
+}
+
+button {
+    margin-top: 1rem;
+}
+
+
+
+ul {
+    margin-top: 0.5rem;
+}
