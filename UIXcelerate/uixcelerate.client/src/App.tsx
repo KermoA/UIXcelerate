@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import NavbarComponent from './components/Navbar';
 
 interface Forecast {
     date: string;
@@ -39,10 +40,12 @@ function App() {
         </table>;
 
     return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
+        <div >
+            <NavbarComponent />
+            <div className="container mt-4">
+                <h1>Weather Forecast</h1>
+                {contents}
+            </div>
         </div>
     );
 
