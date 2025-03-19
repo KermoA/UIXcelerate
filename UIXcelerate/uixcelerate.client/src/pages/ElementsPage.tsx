@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Card, Spinner, Button } from "react-bootstrap";
+import { Link } from "react-router-dom"; // Importing React Router Link
 import Sidebar from "../components/Sidebar";
 
 interface UiElement {
@@ -85,18 +86,15 @@ const ElementsPage: React.FC = () => {
                         <p>Here you'll find all UI elements like buttons, cards, etc.</p>
                         <Row>
                             {elements.map((element) => (
-                                <Col key={element.id} xs={12} md={6} lg={3} className="mb-4">
+                                <Col key={element.id} xs={12} md={6} lg={4} className="mb-4">
                                     <Card className="element-card">
                                         <Card.Body className="d-flex justify-content-center align-items-center">
-                                            {/* Wrap the content with a unique class to scope the styles */}
                                             <div className={`element-preview-${element.id}`} style={{ width: "100%", height: "200px" }}>
-                                                {/* Display the preview of the HTML code */}
                                                 <div
                                                     dangerouslySetInnerHTML={{
                                                         __html: element.htmlCode,
                                                     }}
                                                 ></div>
-                                                {/* Dynamically inject the CSS code */}
                                                 <style>{`
                                                     .element-preview-${element.id} {
                                                         ${element.cssCode}
@@ -108,6 +106,12 @@ const ElementsPage: React.FC = () => {
                                                 `}</style>
                                             </div>
                                         </Card.Body>
+                                        {/* View Code Button */}
+                                        <Card.Footer>
+                                            <Link to={`/element-editor/${element.id}`}>
+                                                <Button variant="primary">View Code</Button>
+                                            </Link>
+                                        </Card.Footer>
                                     </Card>
                                 </Col>
                             ))}
