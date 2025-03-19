@@ -114,6 +114,17 @@ const ElementEditorPage: React.FC = () => {
                                 value={htmlCode}
                                 onChange={(value) => setHtmlCode(value || "")}
                                 theme={isDarkMode ? "vs-dark" : "vs"}
+                                options={{
+                                    minimap: { enabled: false },
+                                    lineNumbers: "on",
+                                    scrollbar: {
+                                        vertical: "hidden",
+                                        horizontal: "auto",
+                                    },
+                                    renderLineHighlight: "all",
+                                    overviewRulerLanes: 0,
+                                    showFoldingControls: "always",
+                                }}
                             />
                         </Tab>
                         <Tab eventKey="css" title={<><FaCss3 className="css-icon" /> <strong className="css-icon">CSS</strong></>}>
@@ -123,6 +134,17 @@ const ElementEditorPage: React.FC = () => {
                                 value={cssCode}
                                 onChange={(value) => setCssCode(value || "")}
                                 theme={isDarkMode ? "vs-dark" : "vs"}
+                                options={{
+                                    minimap: { enabled: false },
+                                    lineNumbers: "on",
+                                    scrollbar: {
+                                        vertical: "hidden",
+                                        horizontal: "auto",
+                                    },
+                                    renderLineHighlight: "all",
+                                    overviewRulerLanes: 0,
+                                    showFoldingControls: "always",
+                                }}
                             />
                         </Tab>
                     </Tabs>
