@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using UIXcelerate.Server.Data;
+using UIXcelerate.Server.Repositories;
 
 namespace UIXcelerate.Server
 {
@@ -7,12 +10,31 @@ namespace UIXcelerate.Server
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Configuration.AddUserSecrets<Program>();
+
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
             // Add services to the container.
 
             builder.Services.AddControllers();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseNpgsql(connectionString));
+
+            builder.Services.AddScoped<UiElementRepository>();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowFrontend",
+                    policy =>
+                    {
+                        policy.WithOrigins("https://localhost:5173")  // Allow your frontend's origin
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    });
+            });
 
             var app = builder.Build();
 
@@ -25,6 +47,8 @@ namespace UIXcelerate.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseCors("AllowFrontend");
 
             app.UseHttpsRedirection();
 

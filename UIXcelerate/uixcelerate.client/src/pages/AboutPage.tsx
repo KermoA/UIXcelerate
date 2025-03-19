@@ -5,13 +5,11 @@ const AboutPage: React.FC = () => {
     return (
         <Container className="my-5">
             <Row>
-                {/* Left Column: Personal Information + Skills */}
                 <Col xs={12} md={4} className="mb-4">
-                    {/* Personal Information Section */}
                     <Card>
                         <Card.Body className="text-center">
                             <Image
-                                src="https://via.placeholder.com/150" // Replace with your actual photo
+                                src="https://via.placeholder.com/150"
                                 roundedCircle
                                 width={150}
                                 height={150}
@@ -22,7 +20,6 @@ const AboutPage: React.FC = () => {
                         </Card.Body>
                     </Card>
 
-                    {/* Skills Section (Moved Below Personal Info) */}
                     <Card className="mt-4">
                         <Card.Body>
                             <Card.Title>Skills</Card.Title>
@@ -37,9 +34,7 @@ const AboutPage: React.FC = () => {
                     </Card>
                 </Col>
 
-                {/* Right Column: Experience + Education */}
                 <Col xs={12} md={8}>
-                    {/* Experience Section */}
                     <Card>
                         <Card.Body>
                             <Card.Title>Work Experience</Card.Title>
@@ -54,7 +49,6 @@ const AboutPage: React.FC = () => {
                         </Card.Body>
                     </Card>
 
-                    {/* Education Section */}
                     <Card className="mt-4">
                         <Card.Body>
                             <Card.Title>Education</Card.Title>

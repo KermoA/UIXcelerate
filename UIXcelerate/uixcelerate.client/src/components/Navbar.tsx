@@ -33,6 +33,7 @@ const NavbarComponent: React.FC = () => {
                     </Nav.Link>
                     <Nav.Link href="/about">About</Nav.Link>
                     <Nav.Link href="/contact">Contact</Nav.Link>
+                    <Nav.Link href="/add-element">Add Element</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>
