@@ -57,3 +57,11 @@ button {
 ul {
     margin-top: 0.5rem;
 }
+
+.html-icon {
+    color: rgba(231, 77, 77, 1);
+}
+
+.css-icon {
+    color: rgba(6, 147, 255, 1);
+}

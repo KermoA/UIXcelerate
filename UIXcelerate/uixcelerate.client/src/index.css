@@ -65,8 +65,3 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-
-.monaco-editor {
-    border: 1px solid #ccc;
-    margin-bottom: 20px;
-}
