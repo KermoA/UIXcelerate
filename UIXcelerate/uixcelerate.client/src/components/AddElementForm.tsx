@@ -158,13 +158,23 @@ const AddElementForm: React.FC = () => {
                         <Form.Group className="mb-3" controlId="formElementCategory">
                             <Form.Label>Category</Form.Label>
                             <Form.Control
-                                type="text"
-                                placeholder="Enter element category"
+                                as="select"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 required
-                            />
+                            >
+                                <option value="" selected disabled>Select a category</option>
+                                <option value="buttons">Buttons</option>
+                                <option value="checkboxes">Checkboxes</option>
+                                <option value="toggle switches">Toggle Switches</option>
+                                <option value="cards">Cards</option>
+                                <option value="loaders">Loaders</option>
+                                <option value="inputs">Inputs</option>
+                                <option value="radio buttons">Radio Buttons</option>
+                                <option value="forms">Forms</option>
+                            </Form.Control>
                         </Form.Group>
+
 
                         <Button variant="primary" type="submit">
                             Add Element
