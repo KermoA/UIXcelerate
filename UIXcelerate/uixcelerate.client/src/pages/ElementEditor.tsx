@@ -67,9 +67,8 @@ const ElementEditorPage: React.FC = () => {
                 });
 
                 if (response.ok) {
-                    setShowToast(true);  // Show success toast
-                    setTimeout(() => setShowToast(false), 2000); // Hide after 2 seconds
-                } else {
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 2000);
                     console.error('Failed to save changes');
                 }
             } catch (error) {

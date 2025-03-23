@@ -57,8 +57,8 @@ const NavbarComponent: React.FC = () => {
 
                 </Nav>
                     {isAdmin && <Nav.Link href="/add-element" className="me-3">Add Element</Nav.Link>}
-                {isAdmin && <Nav.Link href="/admin" className="me-3">Dashboard</Nav.Link>}
-                {isAdmin && <Nav.Link onClick={handleLogout} className="me-3" style={{ cursor: "pointer", color: "red" }}>Logout</Nav.Link>}
+                    {isAdmin && <Nav.Link href="/admin" className="me-3">Dashboard</Nav.Link>}
+                    {isAdmin && <Nav.Link onClick={handleLogout} className="me-3" style={{ cursor: "pointer", color: "red" }}>Logout</Nav.Link>}
             </Navbar.Collapse>
         </Navbar>
     );

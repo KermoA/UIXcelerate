@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Container, Row, Col, Spinner } from "react-bootstrap";
+import { Container, Row, Col, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
@@ -14,10 +14,10 @@ const ElementsPage: React.FC = () => {
     const [elements, setElements] = useState<UiElement[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [iframeHeight, setIframeHeight] = useState<number>(200); // Default height
+    const [iframeHeights, setIframeHeights] = useState<number[]>([]);
     const elementRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
 
-    // Fetch elements from backend
     useEffect(() => {
         const fetchElements = async () => {
             try {
@@ -37,15 +37,54 @@ const ElementsPage: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        if (elementRefs.current.length) {
-            const maxHeight = Math.max(
-                ...elementRefs.current.map((el) => el?.offsetHeight || 0)
-            );
-            setIframeHeight(maxHeight);
-        }
+        const updateIframeHeights = () => {
+            const colsPerRow = 4;
+            const newHeights: number[] = [];
+
+            for (let i = 0; i < elements.length; i += colsPerRow) {
+                const rowIframes = iframeRefs.current.slice(i, i + colsPerRow);
+                const heights = rowIframes.map(iframe => iframe?.contentDocument?.body.scrollHeight || 0);
+                const maxHeight = Math.max(...heights, 100);
+
+                for (let j = 0; j < rowIframes.length; j++) {
+                    newHeights[i + j] = maxHeight + 25;
+                }
+            }
+
+            setIframeHeights(newHeights);
+        };
+
+        const observers: MutationObserver[] = [];
+
+        elements.forEach((_, index) => {
+            const iframe = iframeRefs.current[index];
+            if (!iframe) return;
+
+            const updateHeight = () => {
+                setTimeout(updateIframeHeights, 100);
+            };
+
+            iframe.onload = updateHeight;
+
+            const observer = new MutationObserver(updateHeight);
+            if (iframe.contentDocument) {
+                observer.observe(iframe.contentDocument.body, { childList: true, subtree: true });
+            }
+
+            observers.push(observer);
+        });
+
+        updateIframeHeights();
+
+        window.addEventListener("resize", updateIframeHeights);
+
+        return () => {
+            observers.forEach((observer) => observer.disconnect());
+            window.removeEventListener("resize", updateIframeHeights);
+        };
     }, [elements]);
 
-    if (loading) {
+    if (loading && elements.length === 0) {
         return (
             <Container fluid>
                 <Row>
@@ -74,6 +113,9 @@ const ElementsPage: React.FC = () => {
                         <div className="main-content p-3">
                             <h2>Elements Page</h2>
                             <p>Error: {error}</p>
+                            <Button variant="primary" onClick={() => setLoading(true)}>
+                                Retry
+                            </Button>
                         </div>
                     </Col>
                 </Row>
@@ -101,6 +143,9 @@ const ElementsPage: React.FC = () => {
                                         className="element-container d-flex flex-column align-items-center"
                                     >
                                         <iframe
+                                            ref={(el) => {
+                                                iframeRefs.current[index] = el;
+                                            }}
                                             srcDoc={`<html>
                                                         <head>
                                                             <style>
@@ -111,13 +156,13 @@ const ElementsPage: React.FC = () => {
                                                                     height: 100vh;
                                                                     margin: 0;
                                                                     background-color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
-                                                                                            ? "#121212"
-                                                                                            : "white"
-                                                                                        };
+                                                    ? "#121212"
+                                                    : "white"
+                                                };
                                                                     color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
-                                                                                            ? "white"
-                                                                                            : "black"
-                                                                                        };
+                                                    ? "white"
+                                                    : "black"
+                                                };
                                                                 }
                                                                 ${element.cssCode}
                                                             </style>
@@ -126,13 +171,14 @@ const ElementsPage: React.FC = () => {
                                                     </html>`}
                                             style={{
                                                 width: "100%",
-                                                height: `${iframeHeight}px`,
+                                                height: `${iframeHeights[index] || 100}px`,
                                                 border: "none",
+                                                borderRadius: "15px",
                                             }}
                                             title={`Element Preview ${element.id}`}
                                         />
                                         <Link to={`/element/${element.id}`} className="mt-2">
-                                            <button className="btn btn-primary">View Code</button>
+                                            <Button variant="primary">View Code</Button>
                                         </Link>
                                     </div>
                                 </Col>
