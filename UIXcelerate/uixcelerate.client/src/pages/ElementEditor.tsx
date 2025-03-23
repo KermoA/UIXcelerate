@@ -118,11 +118,12 @@ const ElementEditorPage: React.FC = () => {
                                     lineNumbers: "on",
                                     scrollbar: {
                                         vertical: "hidden",
-                                        horizontal: "auto",
+                                        horizontal: "hidden",
                                     },
                                     renderLineHighlight: "all",
                                     overviewRulerLanes: 0,
                                     showFoldingControls: "always",
+                                    wordWrap: "on",
                                 }}
                             />
                         </Tab>
@@ -138,11 +139,12 @@ const ElementEditorPage: React.FC = () => {
                                     lineNumbers: "on",
                                     scrollbar: {
                                         vertical: "hidden",
-                                        horizontal: "auto",
+                                        horizontal: "hidden",
                                     },
                                     renderLineHighlight: "all",
                                     overviewRulerLanes: 0,
                                     showFoldingControls: "always",
+                                    wordWrap: "on",
                                 }}
                             />
                         </Tab>
