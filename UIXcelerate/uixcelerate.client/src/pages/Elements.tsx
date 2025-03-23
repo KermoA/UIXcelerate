@@ -131,7 +131,7 @@ const ElementsPage: React.FC = () => {
                                             }}
                                             title={`Element Preview ${element.id}`}
                                         />
-                                        <Link to={`/element-editor/${element.id}`} className="mt-2">
+                                        <Link to={`/element/${element.id}`} className="mt-2">
                                             <button className="btn btn-primary">View Code</button>
                                         </Link>
                                     </div>

@@ -13,7 +13,7 @@ interface UiElement {
     cssCode: string;
 }
 
-const ElementEditorPage: React.FC = () => {
+const Element: React.FC = () => {
     const { id } = useParams();
     const [element, setElement] = useState<UiElement | null>(null);
     const [htmlCode, setHtmlCode] = useState<string>("");
@@ -48,35 +48,6 @@ const ElementEditorPage: React.FC = () => {
         };
         fetchElement();
     }, [id]);
-
-    const handleSave = async () => {
-        if (element) {
-            const updatedElement = {
-                ...element,
-                htmlCode: htmlCode,
-                cssCode: cssCode,
-            };
-
-            try {
-                const response = await fetch(`https://localhost:7168/api/elements/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedElement),
-                });
-
-                if (response.ok) {
-                    setShowToast(true);  // Show success toast
-                    setTimeout(() => setShowToast(false), 2000); // Hide after 2 seconds
-                } else {
-                    console.error('Failed to save changes');
-                }
-            } catch (error) {
-                console.error('Error while saving element:', error);
-            }
-        }
-    };
 
     const updatePreview = () => {
         if (iframeRef.current) {
@@ -211,9 +182,6 @@ const ElementEditorPage: React.FC = () => {
                             </div>
                         </Tab>
                     </Tabs>
-                    <Button variant="primary" onClick={handleSave}>
-                        Save Changes
-                    </Button>
                 </Col>
             </Row>
 
@@ -224,10 +192,10 @@ const ElementEditorPage: React.FC = () => {
                 autohide
                 className="position-fixed bottom-0 end-0 m-3"
             >
-                <Toast.Body>Changes saved successfully!</Toast.Body>
+                <Toast.Body>Code copied to clipboard!</Toast.Body>
             </Toast>
         </Container>
     );
 };
 
-export default ElementEditorPage;
+export default Element;

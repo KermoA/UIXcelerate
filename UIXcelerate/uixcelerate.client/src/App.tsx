@@ -7,6 +7,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import NavbarComponent from './components/Navbar';
 import Home from './pages/Home';
 import Elements from './pages/Elements';
+import Element from './pages/Element';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import AddElementForm from "./components/AddElementForm";
@@ -23,12 +24,13 @@ function App() {
                     <Route path="/elements" element={<Elements />} />
                     <Route path="/about" element={<About />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/element-editor/:id" element={<ElementEditor />} />
+                    <Route path="/element/:id" element={<Element />} />
                     <Route path="/admin-login" element={<AdminLogin />} />
 
                     <Route element={<PrivateRoute />}>
                         <Route path="/admin" element={<AdminDashboard />} />
                         <Route path="/add-element" element={<AddElementForm />} />
+                        <Route path="/element-editor/:id" element={<ElementEditor />} />
                     </Route>
                 </Routes>
             </Router>
