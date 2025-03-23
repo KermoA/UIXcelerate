@@ -91,16 +91,15 @@ const AddElementForm: React.FC = () => {
 
     return (
         <Container fluid>
+            <h2>Add a New UI Element</h2>
             <Row className="justify-content-center">
                 <Col xs={12} md={6}>
-                    <h2>Add a New UI Element</h2>
-
                     <Form onSubmit={handleSubmit}>
                         <Tabs
                             id="editor-tabs"
                             activeKey={key}
                             onSelect={(k) => setKey(k!)}
-                            className="mb-3"
+                            className="mb-0"
                         >
                             <Tab eventKey="html" title={<><FaHtml5 className="html-icon" /> <strong className="html-icon">HTML</strong></>}>
                                 <Editor
@@ -187,7 +186,7 @@ const AddElementForm: React.FC = () => {
                     <iframe
                         ref={iframeRef}
                         title="Element Preview"
-                        style={{ width: "100%", height: "500px", border: "none" }}
+                        style={{ width: "100%", height: "400px", border: "none" }}
                     ></iframe>
                 </Col>
             </Row>

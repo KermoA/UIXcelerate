@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col, Card, Spinner, Button } from "react-bootstrap";
-import { Link } from "react-router-dom"; // Importing React Router Link
+import { useEffect, useState, useRef } from "react";
+import { Container, Row, Col, Spinner } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
 interface UiElement {
@@ -14,8 +14,10 @@ const ElementsPage: React.FC = () => {
     const [elements, setElements] = useState<UiElement[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [iframeHeight, setIframeHeight] = useState<number>(200); // Default height
+    const elementRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    // Fetch the elements from the backend
+    // Fetch elements from backend
     useEffect(() => {
         const fetchElements = async () => {
             try {
@@ -26,17 +28,22 @@ const ElementsPage: React.FC = () => {
                 const data = await response.json();
                 setElements(data);
             } catch (err: unknown) {
-                if (err instanceof Error) {
-                    setError(err.message); // Type assertion
-                } else {
-                    setError("An unknown error occurred.");
-                }
+                setError(err instanceof Error ? err.message : "An unknown error occurred.");
             } finally {
                 setLoading(false);
             }
         };
         fetchElements();
     }, []);
+
+    useEffect(() => {
+        if (elementRefs.current.length) {
+            const maxHeight = Math.max(
+                ...elementRefs.current.map((el) => el?.offsetHeight || 0)
+            );
+            setIframeHeight(maxHeight);
+        }
+    }, [elements]);
 
     if (loading) {
         return (
@@ -84,35 +91,50 @@ const ElementsPage: React.FC = () => {
                     <div className="main-content p-3">
                         <h2>Elements Page</h2>
                         <p>Here you'll find all UI elements like buttons, cards, etc.</p>
-                        <Row>
-                            {elements.map((element) => (
-                                <Col key={element.id} xs={12} md={6} lg={4} className="mb-4">
-                                    <Card className="element-card">
-                                        <Card.Body className="d-flex justify-content-center align-items-center">
-                                            <div className={`element-preview-${element.id}`} style={{ width: "100%", height: "200px" }}>
-                                                <div
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: element.htmlCode,
-                                                    }}
-                                                ></div>
-                                                <style>{`
-                                                    .element-preview-${element.id} {
-                                                        ${element.cssCode}
-                                                        display: flex;
-                                                        justify-content: center;
-                                                        align-items: center;
-                                                        height: 100%;
-                                                    }
-                                                `}</style>
-                                            </div>
-                                        </Card.Body>
-                                        {/* View Code Button */}
-                                        <Card.Footer>
-                                            <Link to={`/element-editor/${element.id}`}>
-                                                <Button variant="primary">View Code</Button>
-                                            </Link>
-                                        </Card.Footer>
-                                    </Card>
+                        <Row className="justify-content-center">
+                            {elements.map((element, index) => (
+                                <Col key={element.id} xs={12} md={6} lg={3} className="mb-4">
+                                    <div
+                                        ref={(el) => {
+                                            elementRefs.current[index] = el;
+                                        }}
+                                        className="element-container d-flex flex-column align-items-center"
+                                    >
+                                        <iframe
+                                            srcDoc={`<html>
+                                                        <head>
+                                                            <style>
+                                                                body {
+                                                                    display: flex;
+                                                                    justify-content: center;
+                                                                    align-items: center;
+                                                                    height: 100vh;
+                                                                    margin: 0;
+                                                                    background-color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
+                                                                                            ? "#121212"
+                                                                                            : "white"
+                                                                                        };
+                                                                    color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
+                                                                                            ? "white"
+                                                                                            : "black"
+                                                                                        };
+                                                                }
+                                                                ${element.cssCode}
+                                                            </style>
+                                                        </head>
+                                                        <body>${element.htmlCode}</body>
+                                                    </html>`}
+                                            style={{
+                                                width: "100%",
+                                                height: `${iframeHeight}px`,
+                                                border: "none",
+                                            }}
+                                            title={`Element Preview ${element.id}`}
+                                        />
+                                        <Link to={`/element-editor/${element.id}`} className="mt-2">
+                                            <button className="btn btn-primary">View Code</button>
+                                        </Link>
+                                    </div>
                                 </Col>
                             ))}
                         </Row>
