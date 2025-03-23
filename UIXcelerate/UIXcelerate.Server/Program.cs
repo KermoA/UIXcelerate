@@ -13,6 +13,8 @@ namespace UIXcelerate.Server
             builder.Configuration.AddUserSecrets<Program>();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            var adminUsername = builder.Configuration["Admin:Username"];
+            var adminPassword = builder.Configuration["Admin:Password"];
 
             // Add services to the container.
 
@@ -30,7 +32,7 @@ namespace UIXcelerate.Server
                 options.AddPolicy("AllowFrontend",
                     policy =>
                     {
-                        policy.WithOrigins("https://localhost:5173")  // Allow your frontend's origin
+                        policy.WithOrigins("https://localhost:5173")
                               .AllowAnyMethod()
                               .AllowAnyHeader();
                     });

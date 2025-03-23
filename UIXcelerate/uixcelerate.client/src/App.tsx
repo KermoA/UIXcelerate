@@ -1,13 +1,16 @@
 import './App.css';
 import 'monaco-editor/min/vs/editor/editor.main.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import PrivateRoute from "./components/PrivateRoute";
 import NavbarComponent from './components/Navbar';
-import HomePage from './pages/HomePage';
-import ElementsPage from './pages/ElementsPage';
-import AboutPage from './pages/AboutPage';
-import ContactPage from './pages/ContactPage';
+import Home from './pages/Home';
+import Elements from './pages/Elements';
+import About from './pages/About';
+import Contact from './pages/Contact';
 import AddElementForm from "./components/AddElementForm";
-import ElementEditorPage from "./pages/ElementEditorPage";
+import ElementEditor from "./pages/ElementEditor";
 
 
 function App() {
@@ -16,12 +19,17 @@ function App() {
             <Router>
                 <NavbarComponent />
                 <Routes>
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/elements" element={<ElementsPage />} />
-                    <Route path="/about" element={<AboutPage />} />
-                    <Route path="/contact" element={<ContactPage />} />
-                    <Route path="/add-element" element={<AddElementForm />} />
-                    <Route path="/element-editor/:id" element={<ElementEditorPage />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/elements" element={<Elements />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/contact" element={<Contact />} />
+                    <Route path="/element-editor/:id" element={<ElementEditor />} />
+                    <Route path="/admin-login" element={<AdminLogin />} />
+
+                    <Route element={<PrivateRoute />}>
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/add-element" element={<AddElementForm />} />
+                    </Route>
                 </Routes>
             </Router>
     );

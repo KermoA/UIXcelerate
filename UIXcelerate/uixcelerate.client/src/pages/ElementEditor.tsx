@@ -49,7 +49,6 @@ const ElementEditorPage: React.FC = () => {
     }, [id]);
 
     const handleSave = () => {
-        // Implement logic to save changes
     };
 
     const updatePreview = () => {

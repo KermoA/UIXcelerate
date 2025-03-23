@@ -15,7 +15,6 @@ const AddElementForm: React.FC = () => {
     const iframeRef = useRef<HTMLIFrameElement | null>(null);
     const navigate = useNavigate();
 
-    // Detect dark mode
     useEffect(() => {
         const darkModeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
         const handleThemeChange = (e: MediaQueryListEvent) => {
