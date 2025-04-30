@@ -9,7 +9,6 @@ import Home from './pages/Home';
 import Elements from './pages/Elements';
 import Element from './pages/Element';
 import About from './pages/About';
-import Contact from './pages/Contact';
 import AddElementForm from "./components/AddElementForm";
 import ElementEditor from "./pages/ElementEditor";
 
@@ -23,7 +22,6 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/elements" element={<Elements />} />
                     <Route path="/about" element={<About />} />
-                    <Route path="/contact" element={<Contact />} />
                     <Route path="/element/:id" element={<Element />} />
                     <Route path="/admin-login" element={<AdminLogin />} />
 
