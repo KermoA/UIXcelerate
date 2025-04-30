@@ -1,7 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Container, Row, Col, Spinner, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
 
 interface UiElement {
     id: number;
@@ -18,21 +17,22 @@ const ElementsPage: React.FC = () => {
     const elementRefs = useRef<(HTMLDivElement | null)[]>([]);
     const iframeRefs = useRef<(HTMLIFrameElement | null)[]>([]);
 
+    const fetchElements = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch("https://localhost:7168/api/elements");
+            if (!response.ok) throw new Error("Failed to fetch elements.");
+            const data = await response.json();
+            setElements(data);
+            setError(null);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "An unknown error occurred.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchElements = async () => {
-            try {
-                const response = await fetch("https://localhost:7168/api/elements");
-                if (!response.ok) {
-                    throw new Error("Failed to fetch elements.");
-                }
-                const data = await response.json();
-                setElements(data);
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : "An unknown error occurred.");
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchElements();
     }, []);
 
@@ -43,7 +43,9 @@ const ElementsPage: React.FC = () => {
 
             for (let i = 0; i < elements.length; i += colsPerRow) {
                 const rowIframes = iframeRefs.current.slice(i, i + colsPerRow);
-                const heights = rowIframes.map(iframe => iframe?.contentDocument?.body.scrollHeight || 0);
+                const heights = rowIframes.map(
+                    (iframe) => iframe?.contentDocument?.body.scrollHeight || 0
+                );
                 const maxHeight = Math.max(...heights, 100);
 
                 for (let j = 0; j < rowIframes.length; j++) {
@@ -60,22 +62,20 @@ const ElementsPage: React.FC = () => {
             const iframe = iframeRefs.current[index];
             if (!iframe) return;
 
-            const updateHeight = () => {
-                setTimeout(updateIframeHeights, 100);
+            iframe.onload = () => {
+                const doc = iframe.contentDocument;
+                if (doc?.body) {
+                    const observer = new MutationObserver(() =>
+                        setTimeout(updateIframeHeights, 100)
+                    );
+                    observer.observe(doc.body, { childList: true, subtree: true });
+                    observers.push(observer);
+                }
+                updateIframeHeights();
             };
-
-            iframe.onload = updateHeight;
-
-            const observer = new MutationObserver(updateHeight);
-            if (iframe.contentDocument) {
-                observer.observe(iframe.contentDocument.body, { childList: true, subtree: true });
-            }
-
-            observers.push(observer);
         });
 
         updateIframeHeights();
-
         window.addEventListener("resize", updateIframeHeights);
 
         return () => {
@@ -88,10 +88,7 @@ const ElementsPage: React.FC = () => {
         return (
             <Container fluid>
                 <Row>
-                    <Col xs={12} md={2} className="sidebar">
-                        <Sidebar />
-                    </Col>
-                    <Col xs={12} md={10}>
+                    <Col xs={12} md={12}>
                         <div className="main-content p-3">
                             <h2>Elements Page</h2>
                             <Spinner animation="border" variant="primary" />
@@ -106,14 +103,11 @@ const ElementsPage: React.FC = () => {
         return (
             <Container fluid>
                 <Row>
-                    <Col xs={12} md={2} className="sidebar">
-                        <Sidebar />
-                    </Col>
-                    <Col xs={12} md={10}>
+                    <Col xs={12} md={12}>
                         <div className="main-content p-3">
                             <h2>Elements Page</h2>
                             <p>Error: {error}</p>
-                            <Button variant="primary" onClick={() => setLoading(true)}>
+                            <Button variant="primary" onClick={fetchElements}>
                                 Retry
                             </Button>
                         </div>
@@ -126,10 +120,7 @@ const ElementsPage: React.FC = () => {
     return (
         <Container fluid>
             <Row>
-                <Col xs={12} md={2} className="sidebar">
-                    <Sidebar />
-                </Col>
-                <Col xs={12} md={10}>
+                <Col xs={12} md={12}>
                     <div className="main-content p-3">
                         <h2>Elements Page</h2>
                         <p>Here you'll find all UI elements like buttons, cards, etc.</p>
@@ -147,28 +138,26 @@ const ElementsPage: React.FC = () => {
                                                 iframeRefs.current[index] = el;
                                             }}
                                             srcDoc={`<html>
-                                                        <head>
-                                                            <style>
-                                                                body {
-                                                                    display: flex;
-                                                                    justify-content: center;
-                                                                    align-items: center;
-                                                                    height: 100vh;
-                                                                    margin: 0;
-                                                                    background-color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
-                                                    ? "#121212"
-                                                    : "white"
-                                                };
-                                                                    color: ${window.matchMedia("(prefers-color-scheme: dark)").matches
-                                                    ? "white"
-                                                    : "black"
-                                                };
-                                                                }
-                                                                ${element.cssCode}
-                                                            </style>
-                                                        </head>
-                                                        <body>${element.htmlCode}</body>
-                                                    </html>`}
+                                                <head>
+                                                    <style>
+                                                        body {
+                                                            display: flex;
+                                                            justify-content: center;
+                                                            align-items: center;
+                                                            height: 100vh;
+                                                            margin: 0;
+                                                            background-color: ${window.matchMedia(
+                                                "(prefers-color-scheme: dark)"
+                                            ).matches ? "#121212" : "white"};
+                                                            color: ${window.matchMedia(
+                                                "(prefers-color-scheme: dark)"
+                                            ).matches ? "white" : "black"};
+                                                        }
+                                                        ${element.cssCode}
+                                                    </style>
+                                                </head>
+                                                <body>${element.htmlCode}</body>
+                                            </html>`}
                                             style={{
                                                 width: "100%",
                                                 height: `${iframeHeights[index] || 100}px`,
