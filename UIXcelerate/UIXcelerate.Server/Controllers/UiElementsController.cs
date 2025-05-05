@@ -48,6 +48,12 @@ namespace UIXcelerate.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var existingElement = await _repository.GetByIdAsync(id);
+            if (existingElement == null)
+            {
+                return NotFound();
+            }
+
             await _repository.DeleteAsync(id);
             return NoContent();
         }
